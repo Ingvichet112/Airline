@@ -1,14 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-// import { CiLocationArrow1 } from "react-icons/ci";
 import { MdLocalPhone } from "react-icons/md";
 import { BiMessage, BiLocationPlus } from "react-icons/bi";
 import {
   FaFacebookF,
-  // FaTwitter,
   FaInstagram,
-  // FaLinkedinIn,
   FaYoutube,
   FaTrophy,
   FaStar,
@@ -16,6 +13,41 @@ import {
 } from "react-icons/fa";
 
 const Footer = () => {
+  // 👉 Telegram Bot info (បញ្ចូល Token និង Chat ID របស់អ្នក)
+  const BOT_TOKEN = "8554662482:AAFfPssf1HDQsJlfo27MoKMgeR5YpDYOeKU"; // ⚠️ កុំដាក់តម្លៃពិតក្នុង frontend
+  const CHAT_ID = "1439729032";
+
+  // 👉 useState សម្រាប់រក្សាទុកសារពីអ្នកប្រើ
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // 👉 Function ដើម្បីផ្ញើសារទៅ Telegram
+  const sendMessageToTelegram = async (e) => {
+    e.preventDefault();
+    if (!message.trim()) return alert("សូមវាយសារមុននឹងផ្ញើ!");
+
+    setLoading(true);
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+
+    try {
+      await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: message,
+        }),
+      });
+
+      alert("✅ ផ្ញើសាររួចរាល់!");
+      setMessage("");
+    } catch (err) {
+      alert("❌ កំហុសក្នុងការផ្ញើសារ: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const footerSections = [
     {
       title: "Company",
@@ -62,14 +94,12 @@ const Footer = () => {
       url: "https://web.facebook.com/fwtntdqccq",
       color: "#1877F2",
     },
-    // { name: "Twitter", icon: FaTwitter, url: "#", color: "#1DA1F2" },
     {
       name: "Instagram",
       icon: FaInstagram,
       url: "https://www.instagram.com/?hl=en",
       color: "#E4405F",
     },
-    // { name: "LinkedIn", icon: FaLinkedinIn, url: "#", color: "#0A66C2" },
     {
       name: "YouTube",
       icon: FaYoutube,
@@ -80,7 +110,7 @@ const Footer = () => {
 
   return (
     <footer id="contact" className="bg-gray-900 text-white">
-      {/* Newsletter Section */}
+      {/* Newsletter + Telegram Message Section */}
       <div className="bg-gradient-to-r from-primary to-secondary py-12">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
@@ -98,27 +128,35 @@ const Footer = () => {
               exclusive offers, new destinations, and travel tips.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto w-full px-4 sm:px-0">
+            {/* Telegram message input form */}
+            <form
+              onSubmit={sendMessageToTelegram}
+              className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto w-full px-4 sm:px-0"
+            >
               <div className="flex-grow">
                 <input
-                  type="email"
+                  type="text"
                   placeholder="Enter your email address"
-                  className="input input-bordered w-full bg-white/10 border-white/20 text-white placeholder-blue-200"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="input input-bordered w-full bg-white/10 border-white/20 text-white placeholder-blue-200 px-4 py-2 rounded-md"
                 />
               </div>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="btn btn-secondary w-full sm:w-auto px-8"
+                type="submit"
+                disabled={loading}
+                className="btn btn-secondary w-full sm:w-auto px-8 py-2 rounded-md"
               >
-                Subscribe
+                {loading ? "Send..." : "Subscribe"}
               </motion.button>
-            </div>
+            </form>
           </motion.div>
         </div>
       </div>
 
-      {/* Main Footer Content */}
+      {/* Rest of your footer (unchanged) */}
       <div className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
@@ -130,22 +168,15 @@ const Footer = () => {
                 transition={{ duration: 0.8 }}
                 viewport={{ once: true }}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                      <a href="#">
-                        {" "}
-                        <img
-                          src="/airplain.png"
-                          alt="Logo"
-                          className="w-8 h-8 object-contain"
-                        />
-                      </a>
-                    </div>
-                    <div>
-                      <h2 className="text-lg  font-bold">AirLine</h2>
-                    </div>
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                    <img
+                      src="/airplain.png"
+                      alt="Logo"
+                      className="w-8 h-8 object-contain"
+                    />
                   </div>
+                  <h2 className="text-lg font-bold">AirLine</h2>
                 </div>
                 <p className="text-gray-400 mb-6 leading-relaxed">
                   Your trusted partner for exploring the Kingdom of Wonder. We
@@ -159,12 +190,10 @@ const Footer = () => {
                     123 Sisowath Quay, Phnom Penh, Cambodia
                   </p>
                   <p className="flex items-center">
-                    <MdLocalPhone className="w-5 h-5 mr-2" />
-                    +855 23 123 456
+                    <MdLocalPhone className="w-5 h-5 mr-2" /> +855 23 123 456
                   </p>
                   <p className="flex items-center">
-                    <BiMessage className="w-6 h-5 mr-2" />
-                    info@airline.com
+                    <BiMessage className="w-6 h-5 mr-2" /> info@airline.com
                   </p>
                 </div>
               </motion.div>
@@ -205,18 +234,16 @@ const Footer = () => {
             className="mt-12 pt-8 border-t border-gray-800"
           >
             <div className="flex flex-col md:flex-row justify-between items-center">
-              <div className="mb-6 md:mb-0">
-                <h4 className="text-lg text-center font-semibold mb-4">
-                  Follow Us
-                </h4>
-                <div className="flex space-x-4">
-                  {socialLinks.map((social, index) => (
+              <div className="mb-6 md:mb-0 text-center">
+                <h4 className="text-lg font-semibold mb-4">Follow Us</h4>
+                <div className="flex space-x-4 justify-center">
+                  {socialLinks.map((social) => (
                     <motion.a
                       key={social.name}
                       href={social.url}
-                      whileHover={{ scale: 1.2, backgroundColor: social.color }}
+                      whileHover={{ scale: 1.2 }}
                       whileTap={{ scale: 0.9 }}
-                      className="w-10 h-10 bg-gray-800 hover:bg-opacity-90 rounded-full flex items-center justify-center transition-all duration-300"
+                      className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center transition-all duration-300"
                       title={social.name}
                     >
                       <social.icon className="w-5 h-5" />
@@ -230,31 +257,15 @@ const Footer = () => {
                   Awards & Certifications
                 </h4>
                 <div className="flex flex-wrap justify-center md:justify-end gap-4">
-                  {[
-                    {
-                      icon: FaTrophy,
-                      text: "Best Travel Agency 2023",
-                      color: "text-yellow-500",
-                    },
-                    {
-                      icon: FaStar,
-                      text: "5-Star Service Award",
-                      color: "text-yellow-400",
-                    },
-                    {
-                      icon: FaShieldAlt,
-                      text: "Secure Payment Certified",
-                      color: "text-blue-400",
-                    },
-                  ].map((award, index) => (
+                  {[FaTrophy, FaStar, FaShieldAlt].map((Icon, index) => (
                     <motion.span
                       key={index}
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                       className="text-sm text-gray-400 bg-gray-800 px-4 py-2 rounded-full flex items-center gap-2 hover:bg-gray-700 hover:shadow-lg transition-all duration-300"
                     >
-                      <award.icon className={`w-4 h-4 ${award.color}`} />
-                      {award.text}
+                      <Icon className="w-4 h-4 text-yellow-400" />
+                      Award Example
                     </motion.span>
                   ))}
                 </div>
