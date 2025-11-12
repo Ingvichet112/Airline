@@ -14,8 +14,8 @@ import {
 
 const Footer = () => {
   // 👉 Telegram Bot info (បញ្ចូល Token និង Chat ID របស់អ្នក)
-  const BOT_TOKEN = "8554662482:AAFfPssf1HDQsJlfo27MoKMgeR5YpDYOeKU"; // ⚠️ កុំដាក់តម្លៃពិតក្នុង frontend
-  const CHAT_ID = "1439729032";
+  const BOT_TOKEN = ""; // ⚠️ កុំដាក់តម្លៃពិតក្នុង frontend
+  const CHAT_ID = "";
 
   // 👉 useState សម្រាប់រក្សាទុកសារពីអ្នកប្រើ
   const [message, setMessage] = useState("");
